@@ -16,6 +16,33 @@ L.Icon.Default.mergeOptions({
   shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
 });
 
+// ─────────────────────────────────────────────────────────────
+// Capa base (el "fondo" del mapa).
+// Desde septiembre de 2026, CARTO exige una API key. Si existe
+// NEXT_PUBLIC_CARTO_API_KEY en .env.local usamos CARTO (estilo Voyager);
+// si no, usamos OpenStreetMap, que no necesita key.
+//
+// ¿Por qué "NEXT_PUBLIC_"? Next.js solo deja llegar al navegador las
+// variables que empiezan así. Las imágenes del mapa las pide el NAVEGADOR,
+// así que la key tiene que estar visible ahí (es normal en este tipo de
+// keys; por eso conviene restringirla a tu dominio en el panel de CARTO).
+// Nunca pongas NEXT_PUBLIC_ a un secreto de verdad (DATABASE_URL, etc.).
+// ─────────────────────────────────────────────────────────────
+const CARTO_KEY = process.env.NEXT_PUBLIC_CARTO_API_KEY;
+
+const CAPA_BASE = CARTO_KEY
+  ? {
+      url: `https://basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png?key=${CARTO_KEY}`,
+      attribution:
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+    }
+  : {
+      url: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+      attribution:
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      maxZoom: 19,
+    };
+
 // Botón que centra el mapa para que se vean todos los marcadores.
 function BotonCentrar({ puntos }) {
   const map = useMap();
@@ -87,10 +114,7 @@ export default function MapaInner({
         scrollWheelZoom={false}
         style={{ height, width: "100%", borderRadius: "0.75rem", zIndex: 0 }}
       >
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-          url="https://basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
-        />
+        <TileLayer {...CAPA_BASE} />
         <BotonCentrar puntos={conUbicacion} />
         <CorregirTamano />
         {conUbicacion.map((p) => (

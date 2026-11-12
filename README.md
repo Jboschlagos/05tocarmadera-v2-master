@@ -105,7 +105,10 @@ CLOUDINARY_CLOUD_NAME=tu_cloud_name
 CLOUDINARY_API_KEY=tu_api_key
 CLOUDINARY_API_SECRET=tu_api_secret
 RESEND_API_KEY=tu_resend_api_key
+NEXT_PUBLIC_CARTO_API_KEY=tu_key_de_carto   # opcional: sin ella el mapa usa OpenStreetMap
 ```
+
+> **Mapa:** desde septiembre de 2026 CARTO exige una API key (gratis, se pide en [carto.com/basemaps/apikey](https://carto.com/basemaps/apikey) y llega por email). Si no la configuras, el mapa usa OpenStreetMap automáticamente.
 
 > Recuerda: `.env.local` solo funciona en tu máquina. Para producción (Vercel), estas mismas variables se agregan por separado en **Settings → Environment Variables** del proyecto.
 
